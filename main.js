@@ -10,6 +10,10 @@ $(document).ready(function(){
 	var context= canvas.getContext('2d');
     var triangle = new Triangle(canvas,context);
 
+    var canvas = document.getElementById('myCanvas3');
+	var context= canvas.getContext('2d');
+    var snowflake = new Snowflake(canvas,context);
+
 
     function changeTree(event, ui){
     	if (event.originalEvent) {
@@ -20,9 +24,20 @@ $(document).ready(function(){
             console.log("change22");
         }
     }
+
     function changeTriangle(event,ui){
     	if (event.originalEvent) {
         	triangle.redraw(ui.value);
+        }
+        else {
+            //programmatic change
+            console.log("change22");
+        }
+    }
+
+    function changeSnowFlake(event,ui){
+    	if (event.originalEvent) {
+        	snowflake.redraw(ui.value);
         }
         else {
             //programmatic change
@@ -45,6 +60,15 @@ $(document).ready(function(){
       max: 8,
       value: 2,
 	  change: changeTriangle
+	 
+	});
+
+   $('#snowflake_slider').slider({
+   	  range: "max",
+      min: 1,
+      max: 8,
+      value: 2,
+	  change: changeSnowFlake
 	 
 	});
 
@@ -92,6 +116,10 @@ var Triangle = function(canvas,context){
 
 	this.drawTriangle(200, 2, 60);
 }
+
+
+
+
 
 
 var Tree = function(canvas,context){
@@ -160,6 +188,53 @@ var Tree = function(canvas,context){
 
 	this.drawTree(120,2,30,15);
 	this.drawLeaf();	
+}
+
+
+var Snowflake = function(canvas,context){
+	this.canvas = canvas;
+	this.context = context;
+	this.turtle = new Turtle(context);
+	this.turtle.init(200,300);
+	this.turtle.right(90);
+
+	this.turtle.setPenColor('#00ff00');
+
+		
+	this.drawSnowflake = function(length,depth){
+		this.drawFlake(length, depth);
+		this.turtle.right(120);
+		this.drawFlake(length, depth);
+		this.turtle.right(120);
+		this.drawFlake(length, depth);
+		this.turtle.right(120);
+	}
+
+	this.drawFlake = function(length,depth){
+		if (depth <= 0) {
+			this.turtle.forward(length);
+		}
+		else {
+			this.drawFlake(length / 3, depth - 1);
+			this.turtle.left(60);
+			this.drawFlake(length / 3, depth - 1);
+			this.turtle.right(120);
+			this.drawFlake(length / 3, depth - 1);
+			this.turtle.left(60);
+			this.drawFlake(length / 3, depth - 1);
+		}
+	}
+
+	this.redraw = function(value){
+
+		this.turtle.init(200,300);
+		this.turtle.right(90);
+		this.turtle.setPenColor("#00ff00",15);
+		this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
+		this.drawSnowflake(200, value);
+	}
+
+	this.drawSnowflake(200, 1);
 }
 
 var Turtle = function(context){
